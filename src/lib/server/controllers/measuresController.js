@@ -1,13 +1,13 @@
-import { json, error } from "@sveltejs/kit";
+import { json } from "@sveltejs/kit";
 import { measureServices } from "../services/measureServices";
 
 export const getAllMeasurements = async ({ locals }) => {
     try {
 
         const userId = locals.auth()?.userId;
-        if (!userId) return json({ error: "Umauthorized" }, { status: 401 });
+        if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
 
-        const result = await measureServices.getAll();
+        const result = await measureServices.getComparisonData();
 
         return json(result, { status: 200 });
 
