@@ -15,23 +15,27 @@ export const users = pgTable('users', {
 export const measuredValues = pgTable("measured_values", {
 	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
 	phValue: numeric("ph_value", { precision: 4, scale: 2 }),
-	chlorValue: numeric("chlor_value", { precision: 5, scale: 2 }).notNull(),
-	totalClValue: numeric("total_cl_value", { precision: 5, scale: 2 }).notNull(),
-	gebClValue: numeric("gebundenes_cl_value", { precision: 5, scale: 2 }).notNull(),
+	chlorValue: numeric("chlor_value", { precision: 5, scale: 2 }),
+	totalClValue: numeric("total_cl_value", { precision: 5, scale: 2 }),
+	gebClValue: numeric("gebundenes_cl_value", { precision: 5, scale: 2 }),
 	userId: text("user_id").notNull().references(() => users.id),
+	updatedBy: text("updated_by").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
 });
 
 export const measuringSystem = pgTable("measuring_system", {
 	id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
 	phValue: numeric("ph_value", { precision: 4, scale: 2 }),
-	chlorValue: numeric("chlor_value", { precision: 5, scale: 2 }).notNull(),
-	redoxValue: integer("redox_value").notNull(),
-	waterTemp: numeric("water_temp", { precision: 3, scale: 1 }).notNull(),
-	flow: numeric("flow", { precision: 6, scale: 2 }).notNull(),
-	filterBackwash: boolean("filter_backwash").$default(false),
+	chlorValue: numeric("chlor_value", { precision: 5, scale: 2 }),
+	redoxValue: integer("redox_value"),
+	waterTemp: numeric("water_temp", { precision: 4, scale: 1 }),
+	flow: numeric("flow", { precision: 6, scale: 2 }),
+	filterBackwash: boolean("filter_backwash").default(false).notNull(),
 	userId: text("user_id").notNull().references(() => users.id),
+	updatedBy: text("updated_by").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
 });
 
 export const activity = pgTable("action_lock", {
@@ -54,14 +58,22 @@ export const measureRelations = relations(measuredValues, ({ one }) => ({
 	user: one(users, {
 		fields: [measuredValues.userId],
 		references: [users.id]
-	})
+	}),
+	updatedByUser: one(users,{
+		fields: [measuredValues.updatedBy],
+		references: [users.id],
+	}),
 }));
 
 export const measuringSystemRelations = relations(measuringSystem, ({ one }) => ({
 	user: one(users, {
 		fields: [measuringSystem.userId],
 		references: [users.id],
-	})
+	}),
+	updatedByUser: one(users,{
+		fields: [measuringSystem.updatedBy],
+		references: [users.id],
+	}),
 }));
 
 export const activityRelations = relations(activity, ({ one }) => ({

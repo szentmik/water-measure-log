@@ -15,6 +15,27 @@
       "when": 1770404262363,
       "tag": "0001_aberrant_wonder_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770575313406,
+      "tag": "0002_wild_mikhail_rasputin",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770576903932,
+      "tag": "0003_adorable_nitro",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770585293331,
+      "tag": "0004_rare_sue_storm",
+      "breakpoints": true
     }
   ]
 }
