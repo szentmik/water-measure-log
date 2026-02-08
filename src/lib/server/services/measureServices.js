@@ -62,26 +62,41 @@ export const measureServices = {
         return { manual, system };
     },
 
-    async createManual(data) {
+    async upsertManual(data, currentUserId) {
         const { start, end } = getTodayRange();
 
         const existing = await db.query.measuredValues.findFirst({
             where: between(measuredValues.createdAt, start, end),
         });
 
-        if (existing) throw new Error("Today already measured");
+        if (existing) {
+            const isComplete = existing.chlorValue !== null && existing.phValue !== null && existing.totalClValue !== null;
 
-        return await db.insert(measuredValues).values(data).returning();
+            if (isComplete) {
+                throw new Error("Today already measured, not allowed to modify");
+            }
+
+            return await db.update(measuredValues).set({
+                ...data,
+                updatedBy: currentUserId,
+            }).where(eq(measuredValues.id, existing.id)).returning();
+        } else {
+            return await db.insert(measuredValues).values({
+                ...data,
+                userId: currentUserId,
+                updatedBy: currentUserId,
+            }).returning();
+        }
     },
 
-    async createSystem(data) {
+    async insertSystem(data) {
         const { start, end } = getTodayRange();
 
         const existing = await db.query.measuringSystem.findFirst({
             where: between(measuringSystem.createdAt, start, end),
         });
 
-        if (existing) throw new Error("Today already measured");
+        if (existing) throw new Error("Today every values were added");
 
         return await db.insert(measuringSystem).values(data).returning();
     },

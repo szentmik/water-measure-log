@@ -3,7 +3,7 @@ import { userService } from "../services/userServices";
 
 export const syncUser = async ({ request, locals }) => {
     try {
-        const userId = locals.auth()?.userId;
+        const userId = await locals.auth()?.userId;
         
         if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
 
