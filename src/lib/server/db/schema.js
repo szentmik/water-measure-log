@@ -1,5 +1,3 @@
-import { refreshAll } from '$app/navigation';
-import { updated } from '$app/state';
 import { relations } from 'drizzle-orm';
 import { pgTable, serial, text, integer, timestamp, varchar, numeric, boolean, pgEnum } from 'drizzle-orm/pg-core';
 
@@ -33,7 +31,7 @@ export const measuringSystem = pgTable("measuring_system", {
 	redoxValue: integer("redox_value"),
 	waterTemp: numeric("water_temp", { precision: 4, scale: 1 }),
 	flow: numeric("flow", { precision: 6, scale: 2 }),
-	filterBackwash: boolean("filter_backwash").$default(false).notNull(),
+	filterBackwash: boolean("filter_backwash").default(false).notNull(),
 	userId: text("user_id").notNull().references(() => users.id),
 	updatedBy: text("updated_by").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow().notNull(),

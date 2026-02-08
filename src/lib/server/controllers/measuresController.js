@@ -6,7 +6,7 @@ export const getAllMeasurements = async ({ url, locals }) => {
         const year = parseInt(url.searchParams.get("year")) || new Date().getFullYear();
         const month = parseInt(url.searchParams.get("month")) || new Date().getMonth() + 1;
 
-        const userId = locals.auth()?.userId;
+        const userId = (await locals.auth())?.userId;
         if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
 
         const result = await measureServices.getComparisonDataByMonth(year, month);
@@ -22,7 +22,7 @@ export const getAllMeasurements = async ({ url, locals }) => {
 
 export const getMeasurementsByUserId = async ({ locals }) => {
     try {
-        const userId = locals.auth()?.userId;
+        const userId = (await locals.auth())?.userId;
         if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
 
         const result = await measureServices.getByUserId(userId);
@@ -37,14 +37,13 @@ export const getMeasurementsByUserId = async ({ locals }) => {
 
 export const addNewManualData = async ({ request, locals }) => {
     try {
-        const userId = await locals.auth()?.userId;
+        const userId = (await locals.auth())?.userId;
         if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await request.json();
-
-        const phValue = body.phValue ? Number(body.phValue) : null;
-        const chlorValue = body.chlorValue ? Number(body.chlorValue) : null;
-        const totalClValue = body.totalClValue ? Number(body.totalClValue) : null;
+        const phValue = body.phValue != null ? Number(body.phValue) : null;
+        const chlorValue = body.chlorValue != null ? Number(body.chlorValue) : null;
+        const totalClValue = body.totalClValue != null ? Number(body.totalClValue) : null;
         let gebClValue = null;
 
         if (chlorValue !== null && totalClValue !== null) {
@@ -70,7 +69,7 @@ export const addNewManualData = async ({ request, locals }) => {
 
 export const addNewSystemData = async ({ request, locals }) => {
     try {
-        const userId = await locals.auth()?.userId;
+        const userId = (await locals.auth())?.userId;
         if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
         const body = await request.json();
 
