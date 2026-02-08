@@ -78,7 +78,7 @@ export const addNewSystemData = async ({ request, locals }) => {
         const redoxValue = body.sysRedoxValue ? Number(body.sysRedoxValue) : null;
         const waterTemp = body.sysWaterTemp ? Number(body.sysWaterTemp) : null;
         const flow = body.sysFlow ? Number(body.sysFlow) : null;
-        const filterBackwash = Boolean(body.sysFilterBackwash);
+        const filterBackwash = body.sysFilterBackwash === true || body.sysFilterBackwash ==="true";
 
         const data = {
             phValue,
