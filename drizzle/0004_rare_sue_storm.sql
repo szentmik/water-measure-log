@@ -1,0 +1,1 @@
+ALTER TABLE "measuring_system" ALTER COLUMN "filter_backwash" SET DEFAULT false;
