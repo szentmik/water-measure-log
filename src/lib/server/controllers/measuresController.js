@@ -3,8 +3,15 @@ import { measureServices } from "../services/measureServices";
 
 export const getAllMeasurements = async ({ url, locals }) => {
     try {
-        const year = parseInt(url.searchParams.get("year")) || new Date().getFullYear();
-        const month = parseInt(url.searchParams.get("month")) || new Date().getMonth() + 1;
+        //        const year = parseInt(url.searchParams.get("year")) || new Date().getFullYear();
+        //        const month = parseInt(url.searchParams.get("month")) || new Date().getMonth() + 1;
+        const yearParam = Number(url.searchParams.get("year"));
+        const monthParam = Number(url.searchParams.get("month"));
+        const year = Number.isInteger(yearParam) ? yearParam : new Date().getFullYear();
+        const month = Number.isInteger(monthParam) ? monthParam : new Date().getMonth() + 1;
+        if (month < 1 || month > 12) {
+            return json({ error: "Invalid month" }, { status: 400 });
+        }
 
         const userId = (await locals.auth())?.userId;
         if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
@@ -78,7 +85,7 @@ export const addNewSystemData = async ({ request, locals }) => {
         const redoxValue = body.sysRedoxValue ? Number(body.sysRedoxValue) : null;
         const waterTemp = body.sysWaterTemp ? Number(body.sysWaterTemp) : null;
         const flow = body.sysFlow ? Number(body.sysFlow) : null;
-        const filterBackwash = body.sysFilterBackwash === true || body.sysFilterBackwash ==="true";
+        const filterBackwash = body.sysFilterBackwash === true || body.sysFilterBackwash === "true";
 
         const data = {
             phValue,
