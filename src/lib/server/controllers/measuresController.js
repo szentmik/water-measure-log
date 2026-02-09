@@ -3,8 +3,10 @@ import { measureServices } from '../services/measureServices'
 
 export const getAllMeasurements = async ({ url, locals }) => {
 
-  const yearParam = Number(url.searchParams.get('year'))
-  const monthParam = Number(url.searchParams.get('month'))
+  const yearRaw = url.searchParams.get('year')
+  const monthRaw = url.searchParams.get('month')
+  const yearParam = yearRaw != null ? Number(yearRaw) : NaN
+  const monthParam = monthRaw != null ? Number(monthRaw) : NaN
   const year = Number.isInteger(yearParam) ? yearParam : new Date().getFullYear()
   const month = Number.isInteger(monthParam) ? monthParam : new Date().getMonth() + 1
 

@@ -9,7 +9,7 @@ export const GET = async (event) => {
 
     } catch (err) {
         if (err.message === "Unauthorized") return json({ error: "You have to login" }, { status: 401 });
-        if (err.message === "Invalid month") return json({ error: "Invalis month" }, { status: 400 });
+        if (err.message === "Invalid month") return json({ error: "Invalid month" }, { status: 400 });
         return json({ error: "Failed to get the data" }, { status: 500 });
     }
 }
