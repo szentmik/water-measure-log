@@ -1,6 +1,13 @@
 import { json } from '@sveltejs/kit'
 import { measureServices } from '../services/measureServices'
 
+const toNumberOrNull = (val) => {
+  if (val == null || val === "") return null;
+  const n = Number(val);
+  if (!Number.isFinite(n)) throw new Error("Invalid numeric value");
+  return n;
+};
+
 export const getAllMeasurements = async ({ url, locals }) => {
 
   const yearRaw = url.searchParams.get('year')
@@ -10,7 +17,8 @@ export const getAllMeasurements = async ({ url, locals }) => {
   const year = Number.isInteger(yearParam) ? yearParam : new Date().getFullYear()
   const month = Number.isInteger(monthParam) ? monthParam : new Date().getMonth() + 1
 
-  if (month < 1 || month > 12) throw new Error('Invalid month')
+  if (month < 1 || month > 12) throw new Error('Invalid month');
+  if (year < 1900 || year > 2100) throw new Error('Invalid year');
 
   const userId = (await locals.auth())?.userId
 
@@ -35,9 +43,9 @@ export const addNewManualData = async ({ request, locals }) => {
 
 
   const body = await request.json()
-  const phValue = body.phValue != null ? Number(body.phValue) : null
-  const chlorValue = body.chlorValue != null ? Number(body.chlorValue) : null
-  const totalClValue = body.totalClValue != null ? Number(body.totalClValue) : null
+  const phValue = toNumberOrNull(body.phValue);
+  const chlorValue = toNumberOrNull(body.chlorValue);
+  const totalClValue = toNumberOrNull(body.totalClValue);
   let gebClValue = null
 
   if (chlorValue !== null && totalClValue !== null) {
@@ -61,11 +69,11 @@ export const addNewSystemData = async ({ request, locals }) => {
 
   const body = await request.json()
 
-  const phValue = body.sysPhValue != null ? Number(body.sysPhValue) : null
-  const chlorValue = body.sysChlorValue != null ? Number(body.sysChlorValue) : null
-  const redoxValue = body.sysRedoxValue != null ? Number(body.sysRedoxValue) : null
-  const waterTemp = body.sysWaterTemp != null ? Number(body.sysWaterTemp) : null
-  const flow = body.sysFlow != null ? Number(body.sysFlow) : null
+  const phValue = toNumberOrNull(body.sysPhValue);
+  const chlorValue = toNumberOrNull(body.sysChlorValue);
+  const redoxValue = toNumberOrNull(body.sysRedoxValue);
+  const waterTemp = toNumberOrNull(body.sysWaterTemp);
+  const flow = toNumberOrNull(body.sysFlow);
   const filterBackwash =
     body.sysFilterBackwash === true || body.sysFilterBackwash === 'true'
 
