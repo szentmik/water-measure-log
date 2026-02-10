@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 export const POST = async (event) => {
     try {
         const result = await addNewSystemData(event);
-        return json(result);
+        return json(result, {status: 201});
     } catch (err) {
         if (err.message === "Unauthorized") return json({error: "Unauthorized"}, {status: 401});
         if (err.message === "Today every values were added") return json({error: "Today every values were added"}, {status: 409})

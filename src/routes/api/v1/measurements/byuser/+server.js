@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 export const GET = async (event) => {
     try {
         const data = await getMeasurementsByUserId(event);
-        return json(data);
+        return json(data, {status: 200});
     } catch (err) {
         if (err.message === "Unauthorized") return json({error: "Unauthorized"}, {status: 401});
 
