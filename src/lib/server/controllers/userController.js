@@ -3,9 +3,13 @@ import { userService } from "../services/userServices";
 
 export const syncUser = async ({ request, locals }) => {
     try {
-        const userId = (await locals.auth())?.userId;
-        
-        if (!userId) return json({ error: "Unauthorized" }, { status: 401 });
+        const session = await locals.auth();
+        const userId = session?.userId;
+        const userStatus = session?.sessionStatus;
+
+        if (!userId || userStatus !== "active") {
+            return json({ error: "Unauthorized and inactive" }, { status: 401 })
+        };
 
         const body = await request.json();
         const { name, email, imageUrl } = body;
@@ -22,17 +26,27 @@ export const syncUser = async ({ request, locals }) => {
         }
 
         const user = await userService.upsert({
-            id:userId,
+            id: userId,
             name,
             email,
             imageUrl
         });
 
-        return json(user, {status: 201});
+        return json(user, { status: 201 });
 
 
     } catch (err) {
         console.error("Connection failed", err);
-        return json({error:"Connection error"}, {status:500});
+        return json({ error: "Connection error" }, { status: 500 });
     }
+};
+
+export const getUserData = async ({ locals }) => {
+    const session = await locals.auth();
+    const userId = session?.userId;
+    const userStatus = session?.sessionStatus;
+
+    if (!userId || userStatus !== "active") throw new Error("Unauthorized and inactive");
+
+    return await userService.getById(userId);
 };

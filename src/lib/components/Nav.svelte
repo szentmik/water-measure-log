@@ -15,16 +15,16 @@
 
     let navLinks = $derived([
         { name: "Home", path: "/" },
-        { name: "Measurements", path: "/measurements" },
         { name: "About", path: "/about" },
     ]);
 
     let userItems = $derived([
         { name: "My Profile", path: "/user" },
+        { name: "Measurements", path: "/measurements" },
     ]);
 </script>
 
-<nav class="navbar bg-base-300 px-8 flex justify-between">
+<nav class="navbar bg-slate-900 px-8 flex justify-between font-mono">
     <ul class="flex gap-3">
         {#each navLinks as link, i}
             <li>
@@ -32,20 +32,28 @@
                     href={link.path}
                     class="btn btn-ghost font-bold {link.path ===
                     $page.url.pathname
-                        ? 'bg-base-100 text-primary'
+                        ? 'bg-slate-600 text-slate-100'
                         : ''}">{link.name}</a
                 >
             </li>
         {/each}
     </ul>
-    <ul class="flex gap-3 justify-end w-lvh">
-       {#each userItems as item, i}
-        <li><a href={item.path} class="btn btn-info">My Profile</a></li>        
-       {/each}
-    </ul>
 
-    <ul class="flex gap-2">
+    <ul class="flex gap-3">
         {#if userStatus === "active"}
+            <ul class="flex">
+                {#each userItems as item, i}
+                    <li>
+                        <a
+                            href={item.path}
+                            class="btn btn-ghost text-slate-200 {item.path ===
+                            $page.url.pathname
+                                ? 'bg-slate-600 text-slate-100'
+                                : ''}">{item.name}</a
+                        >
+                    </li>
+                {/each}
+            </ul>
             <li><SignOutButton class="btn btn-dash font-bold" /></li>
         {:else}
             <li><SignInButton class="btn font-bold" mode="modal" /></li>
@@ -60,4 +68,9 @@
 </nav>
 
 <style>
+    @reference "tailwindcss";
+
+    .btn:hover {
+        @apply bg-slate-600;
+    }
 </style>

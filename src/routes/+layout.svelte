@@ -10,8 +10,16 @@
 
 <ClerkProvider>
 	<AuthHandler /><Nav />
-	<main class="px-16">
+	<main>
 		{@render children()}
 	</main>
 	<Footer />
 </ClerkProvider>
+
+<style>
+	@reference "tailwindcss";
+
+	main {
+		@apply p-12 bg-slate-800 text-slate-200;
+	}
+</style>
