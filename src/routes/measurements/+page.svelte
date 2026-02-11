@@ -28,7 +28,7 @@
                 const result = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || "Server failure");
+                    throw new Error(result.error || "Server failure");
                 }
 
                 data = result;

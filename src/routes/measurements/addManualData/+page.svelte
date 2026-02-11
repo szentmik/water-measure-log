@@ -21,14 +21,17 @@
                 }),
             });
 
-            const result = await response.json();
-
             if (!response.ok) throw new Error(result.error || "Server failure");
+
+            const result = await response.json();
 
             message = { text: "Successfully saved", type: "success" };
         } catch (err) {
             message = { text: err.message, type: "error" };
         } finally {
+            phValue = null;
+            chlorValue = null;
+            totalClValue = null;
             isLoading = false;
         }
     };

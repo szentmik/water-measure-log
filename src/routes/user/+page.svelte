@@ -15,11 +15,14 @@
                     headers: { "Content-type": "application/json" },
                 });
 
-                data = await response.json();
+                const result = await response.json();
 
                 if (!response.ok) {
                     throw new Error(data.error || "Server failure");
                 }
+
+                data = result;
+
                 message = { text: "Request successful", type: "success" };
             } catch (err) {
                 message = { text: "Request failed", type: "error" };
