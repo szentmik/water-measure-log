@@ -1,4 +1,17 @@
+<script>
+</script>
 
+<div>
+    <h1 class="">Welcome to Watermeasure app</h1>
+</div>
 
-<h1 class="">Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<style>
+    @reference "tailwindcss";
+    div {
+        @apply flex justify-center;
+    }
+
+    h1 {
+        @apply font-extrabold font-sans text-4xl;
+    }
+</style>

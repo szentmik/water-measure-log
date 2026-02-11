@@ -29,13 +29,19 @@ export const measureServices = {
         const [manual, system] = await Promise.all([
             db.query.measuredValues.findMany({
                 where: between(measuredValues.createdAt, startDate, endDate),
-                with: { user: true },
+                with: {
+                    user: true,
+                    updatedByUser: true,
+                },
                 orderBy: [asc(measuredValues.createdAt)],
 
             }),
             db.query.measuringSystem.findMany({
                 where: between(measuringSystem.createdAt, startDate, endDate),
-                with: { user: true },
+                with: {
+                    user: true,
+                    updatedByUser: true,
+                },
                 orderBy: [asc(measuringSystem.createdAt)],
             })
         ]);
@@ -65,32 +71,39 @@ export const measureServices = {
     async upsertManual(data, currentUserId) {
         const { start, end } = getTodayRange();
 
-        return await db.transaction(async (tx) => {
-            const existing = await tx.query.measuredValues.findFirst({
-                where: between(measuredValues.createdAt, start, end),
-            });
+        // 1. check if exists
+        const existing = await db.query.measuredValues.findFirst({
+            where: between(measuredValues.createdAt, start, end),
+        });
 
-            if (existing) {
-                const isComplete = existing.chlorValue !== null && existing.phValue !== null && existing.totalClValue !== null;
+        if (existing) {
 
-                if (isComplete) {
-                    throw new Error("Today already measured, not allowed to modify");
-                }
+            const isComplete = existing.chlorValue !== null &&
+                existing.phValue !== null &&
+                existing.totalClValue !== null;
 
-                return await tx.update(measuredValues).set({
+            if (isComplete) {
+                throw new Error("Today already measured, not allowed to modify");
+            }
+
+            // 2. Update
+            return await db.update(measuredValues)
+                .set({
                     ...data,
                     updatedBy: currentUserId,
-                }).where(eq(measuredValues.id, existing.id)).returning();
-            } else {
-                return await tx.insert(measuredValues).values({
+                })
+                .where(eq(measuredValues.id, existing.id))
+                .returning();
+        } else {
+            // 3. Insert
+            return await db.insert(measuredValues)
+                .values({
                     ...data,
                     userId: currentUserId,
                     updatedBy: currentUserId,
-                }).returning();
-            }
-        });
-
-
+                })
+                .returning();
+        }
     },
 
     async insertSystem(data) {

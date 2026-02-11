@@ -49,19 +49,23 @@ export const activity = pgTable("action_lock", {
 
 
 export const userRelations = relations(users, ({ many }) => ({
-	measurements: many(measuredValues),
-	systemData: many(measuringSystem),
+	measurements: many(measuredValues, { relationName: "user_measurements" }),
+	updatedMeasurements: many(measuredValues, { relationName: "editor_measurements" }),
+	systemData: many(measuringSystem, {relationName: "users_data"}),
+	updatedSystemData: many(measuringSystem, {relationName: "editors_data"}),
 	activity: many(activity)
 }));
 
 export const measureRelations = relations(measuredValues, ({ one }) => ({
 	user: one(users, {
 		fields: [measuredValues.userId],
-		references: [users.id]
+		references: [users.id],
+		relationName: "user_measurements",
 	}),
-	updatedByUser: one(users,{
+	updatedByUser: one(users, {
 		fields: [measuredValues.updatedBy],
 		references: [users.id],
+		relationName: "editor_measurements",
 	}),
 }));
 
@@ -69,10 +73,12 @@ export const measuringSystemRelations = relations(measuringSystem, ({ one }) => 
 	user: one(users, {
 		fields: [measuringSystem.userId],
 		references: [users.id],
+		relationName:"users_data"
 	}),
-	updatedByUser: one(users,{
+	updatedByUser: one(users, {
 		fields: [measuringSystem.updatedBy],
 		references: [users.id],
+		relationName:"editors_data"
 	}),
 }));
 
