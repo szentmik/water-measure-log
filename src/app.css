@@ -2,3 +2,10 @@
 @plugin "daisyui" {
     themes: all;
 }
+body {
+    @apply bg-slate-700;
+}
+
+h1{
+    @apply py-4;
+}

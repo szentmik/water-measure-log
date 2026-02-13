@@ -1,17 +1,12 @@
 <script>
 </script>
 
-<div>
-    <h1 class="">Welcome to Watermeasure app</h1>
-</div>
+<h1>Welcome to Watermeasure app</h1>
 
 <style>
     @reference "tailwindcss";
-    div {
-        @apply flex justify-center;
-    }
 
     h1 {
-        @apply font-extrabold font-sans text-4xl;
+        @apply font-extrabold font-sans text-4xl text-center;
     }
 </style>

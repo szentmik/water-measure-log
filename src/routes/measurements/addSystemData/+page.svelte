@@ -1,37 +1,47 @@
 <script>
     import { goto } from "$app/navigation";
-    import { preventDefault } from "svelte/legacy";
 
-    let phValue = $state(null);
-    let chlorValue = $state(null);
-    let totalClValue = $state(null);
+    let sysPhValue = $state(null);
+    let sysChlorValue = $state(null);
+    let sysRedoxValue = $state(null);
+    let sysWaterTemp = $state(null);
+    let sysFlow = $state(null);
+    let sysFilterBackwash = $state(false);
 
     let isLoading = $state(false);
     let message = $state({ text: "", type: "" });
 
-    const handleSubmit = async () => {
-        isLoading = true;
-        message = { text: "Save...", type: "info" };
-
+    const handleSystemData = async (e) => {
         try {
-            const response = await fetch("/api/v1/measurements", {
+            isLoading = true;
+            message = { text: "Save...", type: "info" };
+
+            const response = await fetch("/api/v1/measurements/addsystem", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-type": "application/json" },
                 body: JSON.stringify({
-                    phValue,
-                    chlorValue,
-                    totalClValue,
+                    sysPhValue,
+                    sysChlorValue,
+                    sysRedoxValue,
+                    sysWaterTemp,
+                    sysFlow,
+                    sysFilterBackwash,
                 }),
             });
 
             const result = await response.json();
-
-            if (!response.ok) throw new Error(result.error || "Server failure");
+            if (!response.ok) {
+                throw new Error(result.error || "Server failure");
+            }
 
             message = { text: "Successfully saved", type: "success" };
-            phValue = null;
-            chlorValue = null;
-            totalClValue = null;
+
+            sysPhValue = null;
+            sysChlorValue = null;
+            sysRedoxValue = null;
+            sysWaterTemp = null;
+            sysFlow = null;
+            sysFilterBackwash = false;
 
         } catch (err) {
             message = { text: err.message, type: "error" };
@@ -41,34 +51,56 @@
     };
 </script>
 
-<h1>Add your measured data</h1>
+<h1>Add system's data</h1>
 <div class="form-container">
     <input
         type="number"
         step="0.05"
-        bind:value={phValue}
+        bind:value={sysPhValue}
         class="measure-input"
         placeholder="pH (eg. 7.20)"
     />
     <input
         type="number"
         step="0.05"
-        bind:value={chlorValue}
+        bind:value={sysChlorValue}
         class="measure-input"
         placeholder="Cl (eg. 0.60)"
     />
     <input
         type="number"
-        step="0.05"
-        bind:value={totalClValue}
+        step="10"
+        bind:value={sysRedoxValue}
         class="measure-input"
-        placeholder="Total Cl (eg. 0.75)"
+        placeholder="mV (eg. 850)"
     />
+    <input
+        type="number"
+        step="0.05"
+        bind:value={sysWaterTemp}
+        class="measure-input"
+        placeholder="°C (eg. 25°C)"
+    />
+    <input
+        type="number"
+        step="1"
+        bind:value={sysFlow}
+        class="measure-input"
+        placeholder="m3/h (eg. 40 m3/h)"
+    />
+   <div class="flex justify-between">
+    <label class="text-2xl">Filter Backwash</label>
+     <input
+        type="checkbox"
+        bind:checked={sysFilterBackwash}
+        class="checkbox checkbox-xl border border-slate-300"
+    />
+   </div>
 
     <button
         onclick={(e) => {
             e.preventDefault();
-            handleSubmit();
+            handleSystemData();
         }}
         disabled={isLoading}
         class="measure-btn">{isLoading ? "In progress..." : "Save"}</button
