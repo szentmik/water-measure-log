@@ -53,8 +53,8 @@
     <p>loading...</p>
 {:else if data}
     <div class="flex">
-        <ul>
-            <li>Date:</li>
+        <ul class="manual-v rounded-tl-3xl">
+            <li class="bg-slate-500">Date:</li>
             <li>pH:</li>
             <li>Cl:</li>
             <li>Total Cl:</li>
@@ -64,8 +64,10 @@
         </ul>
 
         {#each data.manual as item}
-            <ul>
-                <li>{new Date(item.createdAt).getDate()}</li>
+            <ul class="manual-v">
+                <li class="bg-slate-500">
+                    {new Date(item.createdAt).getDate()}
+                </li>
                 <li>{item.phValue}</li>
                 <li>{item.chlorValue}</li>
                 <li>{item.totalClValue}</li>
@@ -79,47 +81,90 @@
             </ul>
         {/each}
     </div>
+    <hr class=" border-slate-500 border-2" />
+    <div class="flex">
+        <ul class="system-v">
+            <li class="text-s bg-slate-500">Measure Sys</li>
+            <li>pH:</li>
+            <li>Cl:</li>
+            <li>Redox (mV):</li>
+            <li>Temp. (°C):</li>
+            <li>Flow (m&sup3;/h)</li>
+            <li>Backwash</li>
+            <li>Checked by:</li>
+            
+        </ul>
+        {#each data.system as item}
+            <ul class="system-v">
+                <li></li>
+                <li>{item.phValue}</li>
+                <li>{item.chlorValue}</li>
+                <li>{item.redoxValue}</li>
+                <li>{item.waterTemp}</li>
+                <li>{item.flow}</li>
+                <li>{item.filterBackwash === false ? "" : "Yes"}</li>
+                <li class="measured-by">{item.user.name}</li>
+              
+            </ul>
+        {/each}
+    </div>
 {:else}
     <p>{message.text}</p>
 {/if}
-<div class="fixed bottom-6 right-6 z-50">
-    <a
-        href="/measurements/addManualData"
-        class="btn btn-circle bg-emerald-800 text-3xl">+</a
-    >
-</div>
+
+<ul class="add">
+    <li>
+        <a
+            href="/measurements/addManualData"
+            class="btn bg-emerald-800 text-emerald-200 hover:bg-emerald-200 hover:text-emerald-900 cursor-pointer"
+            >+ Add manual data</a
+        >
+    </li>
+    <li>
+        <a
+            href="/measurements/addSystemData"
+            class="btn bg-emerald-300 text-emerald-950 hover:bg-emerald-900 hover:text-emerald-300 cursor-pointer"
+            >+ Add system data</a
+        >
+    </li>
+</ul>
 
 <style>
     @reference "tailwindcss";
 
     h1 {
-        @apply flex py-4 justify-center font-stretch-200% text-5xl;
+        @apply text-center font-stretch-200% text-4xl;
     }
-
-    
 
     ul {
-        display: grid;
-        grid-template-rows: repeat(7, 3rem);
-        max-width: 5rem;
-        overflow-x: hidden;
+        @apply grid-rows-7 max-w-20 overflow-hidden;
     }
 
-    ul:first-child{
-        max-width: 10rem;
+    ul.manual-v:first-child, ul.system-v:first-child {
+        @apply max-w-32 min-w-32;
     }
 
-    li:first-child {
-        @apply bg-slate-600 font-extrabold;
+    ul.manual-v li,
+    ul.system-v li {
+        @apply flex items-center pl-6 whitespace-nowrap min-h-12 min-w-32 max-w-32;
     }
 
-    li {
-        @apply flex items-center;
-        padding-left: 1.5rem;
-        white-space: nowrap;
+    ul.manual-v:nth-of-type(2),
+    ul.system-v:nth-of-type(2){
+        @apply border-l-2 border-l-slate-500;
+    }
+
+     ul.add {
+        @apply flex justify-center mt-6 gap-2 max-w-full;
+    }
+
+    ul.add{
+        @media (max-width: 764px) {
+            @apply w-full; 
+        }
     }
 
     .measured-by {
-        font-size: .9rem;
+        font-size: 0.9rem;
     }
 </style>
