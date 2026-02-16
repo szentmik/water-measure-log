@@ -1,9 +1,19 @@
 <script>
-    let d = new Date();
+    // let d = new Date();
 
-    const recommendedTheme =
-        d.getHours() > 19 || d.getHours() < 7 ? "dark" : "light";
-    let theme = $state(recommendedTheme);
+    // const recommendedTheme =
+    //     d.getHours() > 19 || d.getHours() < 7 ? "dark" : "light";
+    // let theme = $state(recommendedTheme);
+
+    const getInitialTheme = () => {
+        if (typeof localStorage !== "undefined") {
+            const stored = localStorage.getItem("theme");
+            if (stored === "dark" || stored === "light") return stored;
+        }
+        const h = new Date().getHours();
+        return h > 19 || h < 7 ? "dark" : "light";
+    };
+    let theme = $state(getInitialTheme());
 
     $effect(() => {
         document.documentElement.setAttribute("data-theme", theme);
@@ -31,8 +41,8 @@
         p {
             font-size: 0.7rem;
             font-weight: bold;
-            letter-spacing: .1rem;
-            padding-left: .5rem;
+            letter-spacing: 0.1rem;
+            padding-left: 0.5rem;
         }
     }
 
@@ -54,8 +64,8 @@
     .circle {
         border-radius: 100%;
         background-color: var(--bg);
-        height: .75rem;
-        width: .75rem;
+        height: 0.75rem;
+        width: 0.75rem;
         box-shadow: inset 0 0 0.2rem var(--text);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }

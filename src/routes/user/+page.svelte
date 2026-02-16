@@ -79,7 +79,7 @@
         align-items: center;
         flex-direction: column;
         text-align: center;
-        width:min(40rem 100%);
+        width:min(40rem, 100%);
     }
 
     img {
