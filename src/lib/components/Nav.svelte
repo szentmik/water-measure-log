@@ -6,10 +6,9 @@
         SignUpButton,
         useClerkContext,
     } from "svelte-clerk/client";
+    import ThemeChanger from "./ThemeChanger.svelte";
 
     let isOpen = $state(false);
-
-    let activeUrl = $state($page.url.pathname);
 
     const ctx = useClerkContext();
     const userStatus = $derived(ctx.auth?.sessionStatus);
@@ -27,109 +26,168 @@
 </script>
 
 <nav>
-    <button
-        class="mobile-menu"
-        aria-label="menu-btn"
-        onclick={() => (isOpen = !isOpen)}
-        ><i class="fa-solid fa-bars"></i></button
-    >
-    <ul class="nav-items {isOpen === true ? 'translate-x-0' : 'opened-menu'}">
-        <li class="mobile-menu-close">
-            <button
-                aria-label="close-menu-btn"
-                onclick={() => (isOpen = !isOpen)}
-                ><i class="fa-solid fa-xmark"></i></button
-            >
-        </li>
-        {#each navLinks as link, i}
-            <li>
-                <a
-                    href={link.path}
+    <a href={navLinks[0].path} class="logo">Water-App</a>
+    <div class="nav">
+        <ThemeChanger />
+        <button
+            class="btn mobile-btn mobile-menu"
+            aria-label="menu-btn"
+            onclick={() => (isOpen = !isOpen)}
+            ><i class="fa-solid fa-bars"></i></button
+        >
+        <ul class="nav-items {isOpen ? 'menu-open' : ''}">
+            <li class="mobile-menu-close">
+                <button
+                    class="btn mobile-btn"
+                    aria-label="close-menu-btn"
                     onclick={() => (isOpen = !isOpen)}
-                    class="btn btn-ghost font-bold {link.path ===
-                    $page.url.pathname
-                        ? 'bg-slate-600 text-slate-100'
-                        : ''}">{link.name}</a
+                    ><i class="fa-solid fa-xmark"></i></button
                 >
             </li>
-        {/each}
-        {#if userStatus === "active"}
-            {#each userItems as item, i}
+            {#each navLinks as link, i}
                 <li>
                     <a
-                        href={item.path}
+                        href={link.path}
                         onclick={() => (isOpen = !isOpen)}
-                        class="btn btn-ghost text-slate-200 {item.path ===
-                        $page.url.pathname
-                            ? 'bg-slate-600 text-slate-100'
-                            : ''}">{item.name}</a
+                        class="btn {link.path === $page.url.pathname
+                            ? 'active-page'
+                            : ''}">{link.name}</a
                     >
                 </li>
             {/each}
-            <li class="sign-out-btn">
-                <button onclick={() => (isOpen = !isOpen)}>
-                    <SignOutButton class="btn btn-dash font-bold" />
-                </button>
-            </li>
-        {:else}
-            <li>
-                <button onclick={() => (isOpen = !isOpen)}>
-                    <SignInButton class="btn font-bold" mode="modal" />
-                </button>
-            </li>
-            <li>
-                <button onclick={() => (isOpen = !isOpen)}>
-                    <SignUpButton
-                        class="btn bg-primary text-primary-content"
+            {#if userStatus === "active"}
+                {#each userItems as item, i}
+                    <li>
+                        <a
+                            href={item.path}
+                            onclick={() => (isOpen = !isOpen)}
+                            class="btn {item.path === $page.url.pathname
+                                ? 'active-page'
+                                : ''}">{item.name}</a
+                        >
+                    </li>
+                {/each}
+                <li class="clerk-btn signout">
+                    <SignOutButton onclick={() => (isOpen = !isOpen)}
+                    ></SignOutButton>
+                </li>
+            {:else}
+                <li class="clerk-btn">
+                    <SignInButton
                         mode="modal"
+                        onclick={() => (isOpen = !isOpen)}
                     />
-                </button>
-            </li>
-        {/if}
-    </ul>
+                </li>
+                <li class="clerk-btn">
+                    <SignUpButton
+                        mode="modal"
+                        onclick={() => (isOpen = !isOpen)}
+                    />
+                </li>
+            {/if}
+        </ul>
+    </div>
 </nav>
 
 <style>
-    @reference "tailwindcss";
-
-    .btn:hover {
-        @apply bg-slate-600;
+    nav {
+        background-color: var(--bg);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-block: 0.5rem;
+        padding-inline: 2rem;
+    }
+    .nav {
+        display: flex;
+        align-items: center;
+        overflow-x: hidden;
     }
 
-    nav {
-        @apply flex justify-end relative;
+    .logo {
+        font-family: "Courier New", Courier, monospace;
+        font-weight: bolder;
+        letter-spacing: -0.1rem;
+        text-transform: uppercase;
     }
 
     .nav-items {
-        @apply flex flex-col md:flex-row md:relative md:my-2;
-        @media (max-width: 764px) {
-            @apply fixed gap-2 pt-24 pl-20 z-40 h-full w-full;
-            background-image: linear-gradient(
-                90deg,
-                #62748d00 5%,
-                #62748dfa 15%
-            );
-            transition: 1s ease-in-out;
-        }
+        list-style-type: none;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
     }
 
-    .mobile-menu,
-    .mobile-menu-close {
-        @apply hidden;
+    a {
+        color: var(--text-muted);
+        text-decoration: none;
+    }
+
+    .btn,
+    .clerk-btn :global(button) {
+        background-color: var(--bg-light);
+        color: var(--text-muted);
+        border-style: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: bolder;
+        height: 2.5rem;
+        padding: 0.5rem 1rem;
+        transition: 0.3s;
+    }
+
+    .btn:hover, .clerk-btn :global(button):hover {
+        background-color: var(--bg-dark);
+        color: var(--text);
+    }
+
+    .signout :global(button) {
+        border: solid .2rem var(--info);
+    }
+
+    .mobile-btn {
+        display: none;
+    }
+
+    .active-page {
+        background-color: var(--info);
+        color: white;
+        text-transform: uppercase;
     }
 
     @media (max-width: 764px) {
-        .mobile-menu {
-            @apply block text-2xl py-4 px-4;
+        nav {
+            padding-right: 0.5rem;
         }
+        .mobile-btn {
+            display: block;
+            justify-content: end;
+        }
+        .nav-items {
+            background-color: var(--bg);
+            position: fixed;
+            top: 0;
+            right: 0;
+            flex-direction: column;
+            align-items: start;
+            padding: 0.5rem 1rem 0 2rem;
+            height: 100vh;
+            width: 100%;
+            transform: translateX(100%);
+            transition: 0.3s;
+            z-index: 10;
+        }
+
         .mobile-menu-close {
-            @apply block absolute top-4 right-4 text-3xl;
+            align-self: flex-end;
+            margin-bottom: 2rem;
         }
-        .sign-out-btn {
-            @apply mt-12 self-center;
-        }
-        .opened-menu {
-            @apply translate-x-full;
+
+        .menu-open {
+            transform: translateX(0);
         }
     }
 </style>

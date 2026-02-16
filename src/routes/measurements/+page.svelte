@@ -52,61 +52,57 @@
 {#if isLoading}
     <p>loading...</p>
 {:else if data}
-    <div class="flex">
-        <ul class="manual-v rounded-tl-3xl">
-            <li class="bg-slate-500">Date:</li>
-            <li>pH:</li>
-            <li>Cl:</li>
-            <li>Total Cl:</li>
-            <li>Combined Cl:</li>
-            <li>Measured by:</li>
-            <li>Updated by:</li>
-        </ul>
-
-        {#each data.manual as item}
-            <ul class="manual-v">
-                <li class="bg-slate-500">
-                    {new Date(item.createdAt).getDate()}
-                </li>
-                <li>{item.phValue}</li>
-                <li>{item.chlorValue}</li>
-                <li>{item.totalClValue}</li>
-                <li>{item.gebClValue}</li>
-                <li class="measured-by">{item.user.name}</li>
-                <li>
-                    {item.user.id === item.updatedBy
-                        ? null
-                        : item.updatedByUser.name}
-                </li>
+    <div class="main-content">
+        <div class="content">
+            <ul class="content-manual">
+                <li class="">Date:</li>
+                <li>pH:</li>
+                <li>Cl:</li>
+                <li>Total Cl:</li>
+                <li>Combined Cl:</li>
+                <li>Measured by:</li>
+                <li>Updated by:</li>
             </ul>
-        {/each}
-    </div>
-    <hr class=" border-slate-500 border-2" />
-    <div class="flex">
-        <ul class="system-v">
-            <li class="text-s bg-slate-500">Measure Sys</li>
-            <li>pH:</li>
-            <li>Cl:</li>
-            <li>Redox (mV):</li>
-            <li>Temp. (°C):</li>
-            <li>Flow (m&sup3;/h)</li>
-            <li>Backwash</li>
-            <li>Checked by:</li>
-            
-        </ul>
-        {#each data.system as item}
-            <ul class="system-v">
-                <li></li>
-                <li>{item.phValue}</li>
-                <li>{item.chlorValue}</li>
-                <li>{item.redoxValue}</li>
-                <li>{item.waterTemp}</li>
-                <li>{item.flow}</li>
-                <li>{item.filterBackwash === false ? "" : "Yes"}</li>
-                <li class="measured-by">{item.user.name}</li>
-              
+            {#each data.manual as item}
+                <ul class="content-manual">
+                    <li>{new Date(item.createdAt).getDate()}</li>
+                    <li>{item.phValue}</li>
+                    <li>{item.chlorValue}</li>
+                    <li>{item.totalClValue}</li>
+                    <li>{item.gebClValue}</li>
+                    <li class="measured-by">{item.user.name}</li>
+                    <li>
+                        {item.user.id === item.updatedBy
+                            ? null
+                            : item.updatedByUser.name}
+                    </li>
+                </ul>
+            {/each}
+        </div>
+        <div class="content">
+            <ul class="content-system">
+                <li class="">Measure Sys</li>
+                <li>pH:</li>
+                <li>Cl:</li>
+                <li>Redox (mV):</li>
+                <li>Temp. (°C):</li>
+                <li>Flow (m&sup3;/h)</li>
+                <li>Backwash</li>
+                <li>Checked by:</li>
             </ul>
-        {/each}
+            {#each data.system as item}
+                <ul class="content-system">
+                    <li>{new Date(item.createdAt).getDate()}</li>
+                    <li>{item.phValue}</li>
+                    <li>{item.chlorValue}</li>
+                    <li>{item.redoxValue}</li>
+                    <li>{item.waterTemp}</li>
+                    <li>{item.flow}</li>
+                    <li>{item.filterBackwash === false ? "" : "Yes"}</li>
+                    <li class="measured-by">{item.user.name}</li>
+                </ul>
+            {/each}
+        </div>
     </div>
 {:else}
     <p>{message.text}</p>
@@ -114,57 +110,72 @@
 
 <ul class="add">
     <li>
-        <a
-            href="/measurements/addManualData"
-            class="btn bg-emerald-800 text-emerald-200 hover:bg-emerald-200 hover:text-emerald-900 cursor-pointer"
-            >+ Add manual data</a
-        >
+        <a href="/measurements/addManualData" class="">+ Add manual data</a>
     </li>
     <li>
-        <a
-            href="/measurements/addSystemData"
-            class="btn bg-emerald-300 text-emerald-950 hover:bg-emerald-900 hover:text-emerald-300 cursor-pointer"
-            >+ Add system data</a
-        >
+        <a href="/measurements/addSystemData" class="">+ Add system data</a>
     </li>
 </ul>
 
 <style>
-    @reference "tailwindcss";
-
-    h1 {
-        @apply text-center font-stretch-200% text-4xl;
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
-
     ul {
-        @apply grid-rows-7 max-w-20 overflow-hidden;
+        list-style-type: none;
+    }
+    .content {
+        background-color: var(--bg-light);
+        border-radius: 1rem;
+        display: flex;
+        flex-wrap: nowrap;
+        padding: 1rem;
     }
 
-    ul.manual-v:first-child, ul.system-v:first-child {
-        @apply max-w-32 min-w-32;
-    }
-
-    ul.manual-v li,
-    ul.system-v li {
-        @apply flex items-center pl-6 whitespace-nowrap min-h-12 min-w-32 max-w-32;
-    }
-
-    ul.manual-v:nth-of-type(2),
-    ul.system-v:nth-of-type(2){
-        @apply border-l-2 border-l-slate-500;
-    }
-
-     ul.add {
-        @apply flex justify-center mt-6 gap-2 max-w-full;
-    }
-
-    ul.add{
-        @media (max-width: 764px) {
-            @apply w-full; 
+    .content-manual,
+    .content-system {
+        display: grid;
+        grid-template-columns: 4rem;
+        li {
+            height: 2rem;
+            padding: 0.25rem 1rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        li:first-child {
+            background-color: var(--bg-dark);
         }
     }
 
-    .measured-by {
-        font-size: 0.9rem;
+    .content-manual:first-child,
+    .content-system:first-child {
+        grid-template-columns: 7.5rem;
+    }
+
+    .add {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-block: 1rem;
+        li a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.75rem;
+            font-weight: bolder;
+            letter-spacing: -.01rem;
+            padding: 0.5rem 1rem;
+            transition: .3s ease-in-out;
+        }
+        li a:hover {
+            background-color: var(--text-muted);
+            color: var(--bg-light);
+        }
     }
 </style>

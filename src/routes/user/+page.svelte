@@ -54,7 +54,7 @@
                     </p>
                 </div>
 
-                <button><a href="/measurements/byuser">My measurements</a></button>
+                <a href="/measurements/byuser" class="btn">My measurements</a>
             </div>
         {:else}
             <p>{message.text}</p>
@@ -63,28 +63,41 @@
 </div>
 
 <style>
-    @reference "tailwindcss";
+    .my-container {
+      display: flex;
+      justify-content: center;
+    }
+
     .my-card {
-        @apply relative flex flex-col bg-slate-500 shadow-md border-4 border-slate-800 shadow-slate-600 rounded-2xl w-60 my-8;
+        position: relative;
+        background-color: var(--bg-light);
+        border-radius: 1rem;
+        border: solid var(--bg) 0.2rem;
+        padding: 6rem 1rem 1rem;
+        margin-top: 7rem;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        width:min(40rem 100%);
     }
 
     img {
-        @apply border-4 border-slate-800 rounded-full self-center relative -top-12 h-24 w-24;
+        position: absolute;
+        top: -5rem;
+        border-radius: 100%;
+        object-fit: cover;
+        height: auto;
+        width: 10rem;
     }
 
-    .content {
-        @apply text-center;
-    }
-
-    h2 {
-        @apply font-bold text-xl;
-    }
-
-    button {
-        @apply px-4 py-2 bg-emerald-800 text-emerald-200 self-center font-bold rounded-4xl border-2 border-emerald-100 hover:bg-emerald-900 cursor-pointer relative -bottom-6 w-10/12;
-    }
-
-    .my-container {
-        @apply flex justify-center;
+    .btn {
+        background-color: var(--bg-dark);
+        border: none;
+        color: var(--text);
+        text-shadow: var(--bg-light);
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
     }
 </style>

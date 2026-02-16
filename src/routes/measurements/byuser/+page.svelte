@@ -45,8 +45,7 @@
 {/if}
 
 <style>
-    @reference "tailwindcss";
-    pre {
-        @apply overflow-hidden text-xs;
-    }
+pre{
+    overflow-x: hidden;
+}
 </style>
