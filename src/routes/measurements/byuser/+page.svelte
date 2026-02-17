@@ -8,7 +8,7 @@
         const getData = async () => {
             try {
                 isLoading = true;
-                message = { text: "Loading...", type: " info" };
+                message = { text: "Loading...", type: "info" };
 
                 const response = await fetch("/api/v1/measurements/byuser", {
                     method: "GET",
