@@ -53,8 +53,6 @@
                         {data.email}
                     </p>
                 </div>
-
-                <a href="/measurements/byuser" class="btn">My measurements</a>
             </div>
         {:else}
             <p>{message.text}</p>
@@ -89,15 +87,5 @@
         object-fit: cover;
         height: auto;
         width: 10rem;
-    }
-
-    .btn {
-        background-color: var(--bg-dark);
-        border: none;
-        color: var(--text);
-        text-shadow: var(--bg-light);
-        margin-top: 1rem;
-        padding: 0.5rem 1rem;
-        text-decoration: none;
     }
 </style>

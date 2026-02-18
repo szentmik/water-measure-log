@@ -26,7 +26,9 @@
 </script>
 
 <nav>
-    <a href={navLinks[0].path} class="logo">Water-App</a>
+    <a href={navLinks[0].path} class="logo">
+        <i class="fa-solid fa-glass-water-droplet"></i> Water-App</a
+    >
     <div class="nav">
         <ThemeChanger />
         <button
@@ -105,8 +107,8 @@
     }
 
     .logo {
-        font-family: "Courier New", Courier, monospace;
-        font-weight: bolder;
+        font-family: "Ubutnu Sans Mono", monospace;
+        font-weight: 700;
         letter-spacing: -0.1rem;
         text-transform: uppercase;
     }
@@ -139,13 +141,14 @@
         transition: 0.3s;
     }
 
-    .btn:hover, .clerk-btn :global(button):hover {
+    .btn:hover,
+    .clerk-btn :global(button):hover {
         background-color: var(--bg-dark);
         color: var(--text);
     }
 
     .signout :global(button) {
-        border: solid .2rem var(--info);
+        border: solid 0.2rem var(--info);
     }
 
     .mobile-btn {
