@@ -17,9 +17,5 @@
 </ClerkProvider>
 
 <style>
-	@reference "tailwindcss";
 
-	main {
-		@apply p-12 bg-slate-800 text-slate-200;
-	}
 </style>

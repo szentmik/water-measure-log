@@ -1,4 +1,83 @@
-@import 'tailwindcss';
-@plugin "daisyui" {
-    themes: all;
+:root[data-theme="dark"] {
+    --bg-dark: hsl(191, 29%, 0%);
+    --bg: hsl(191, 29%, 10%);
+    --bg-light: hsl(202, 29%, 20%);
+
+    --text: hsl(191, 29%, 95%);
+    --text-muted: hsl(191, 29%, 70%);
+
+    --highlight: hsl(191 22% 36%);
+
+    --border: hsl(191 31% 25%);
+    --border-muted: hsl(191 52% 15%);
+
+    --primary: hsl(191 61% 60%);
+    --secondary: hsl(12 69% 72%);
+
+    --danger: hsl(9 26% 64%);
+    --warning: hsl(52 19% 57%);
+    --success: hsl(146 17% 59%);
+    --info: hsl(217 28% 65%);
+}
+
+:root[data-theme="light"] {
+    --bg-dark: hsl(191, 29%, 80%);
+    --bg: hsl(191, 29%, 90%);
+    --bg-light: hsl(191, 29%, 100%);
+
+    --text: hsl(191, 29%, 5%);
+    --text-muted: hsl(191, 29%, 30%);
+
+    --highlight: hsl(191 22% 36%);
+
+    --border: hsl(191 31% 25%);
+    --border-muted: hsl(191 52% 15%);
+
+    --primary: hsl(191 61% 60%);
+    --secondary: hsl(12 69% 72%);
+
+    --danger: hsl(9 26% 64%);
+    --warning: hsl(52 19% 57%);
+    --success: hsl(146 17% 59%);
+    --info: hsl(217 28% 65%);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-muted);
+    font-family: "Ubuntu", sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    position: relative;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+main {
+    padding-inline: 5%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text);
+}
+
+h1 {
+    font-size: min(2.5rem, 8vw);
+    letter-spacing: -.1rem;
+    padding-block: 2rem;
+    text-align: center;
 }

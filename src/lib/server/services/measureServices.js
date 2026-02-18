@@ -109,19 +109,16 @@ export const measureServices = {
     async insertSystem(data) {
         const { start, end } = getTodayRange();
 
-        return await db.transaction(async (tx) => {
-            const existing = await tx.query.measuringSystem.findFirst({
-                where: between(measuringSystem.createdAt, start, end),
-            });
 
-            if (existing) throw new Error("Today every values were added");
-
-            return await tx.insert(measuringSystem).values({
-                ...data,
-                updatedBy: data.userId,
-            }).returning();
+        const existing = await db.query.measuringSystem.findFirst({
+            where: between(measuringSystem.createdAt, start, end),
         });
 
-    },
+        if (existing) throw new Error("Today every values were added");
 
+        return await db.insert(measuringSystem).values({
+            ...data,
+            updatedBy: data.userId,
+        }).returning();
+    },
 }

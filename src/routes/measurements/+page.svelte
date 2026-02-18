@@ -8,6 +8,33 @@
 
     let message = $state({ text: "", type: "" });
 
+    const changeMonth = (n) => {
+        month += n;
+        month < 0 ? (month = 11) : month;
+        month > 11 ? (month = 0) : month;
+        return month;
+    };
+
+    const changeYear = (n) => {
+        year += n;
+        return year;
+    };
+
+    const monthNames = [
+        "Dec.",
+        "Jan.",
+        "Feb.",
+        "Mar.",
+        "Apr.",
+        "May",
+        "Jun.",
+        "Jul.",
+        "Aug.",
+        "Sep.",
+        "Oct.",
+        "Nov.",
+    ];
+
     $effect(() => {
         const getAllMeasurements = async () => {
             try {
@@ -45,81 +72,221 @@
 
         getAllMeasurements();
     });
+
+    const monthDays = $derived.by(() => {
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const daysArray = [];
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const manualEntry = data?.manual?.find(
+                (m) => new Date(m.createdAt).getDate() === i,
+            );
+            const systemEntry = data?.system?.find(
+                (s) => new Date(s.createdAt).getDate() === i,
+            );
+
+            daysArray.push({
+                day: i,
+                manual: manualEntry || null,
+                system: systemEntry || null,
+            });
+        }
+        return daysArray;
+    });
 </script>
 
 <h1>Measurements</h1>
-
+<div class="date-changer">
+    <div>
+        <button onclick={() => changeMonth(-1)} aria-label="Previous month"><i class="fa-solid fa-chevron-left"></i></button>
+        <h3>{monthNames[month]}</h3>
+        <button onclick={() => changeMonth(1)} aria-label="Next month"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div>
+        <button onclick={() => changeYear(-1)} aria-label="Previous year"><i class="fa-solid fa-chevron-left"></i></button>
+        <h3>{year}</h3>
+        <button onclick={() => changeYear(1)} aria-label="Next year"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+</div>
 {#if isLoading}
     <p>loading...</p>
 {:else if data}
-    <div class="flex">
-        <ul>
-            <li>Date:</li>
-            <li>pH:</li>
-            <li>Cl:</li>
-            <li>Total Cl:</li>
-            <li>Combined Cl:</li>
-            <li>Measured by:</li>
-            <li>Updated by:</li>
-        </ul>
-
-        {#each data.manual as item}
-            <ul>
-                <li>{new Date(item.createdAt).getDate()}</li>
-                <li>{item.phValue}</li>
-                <li>{item.chlorValue}</li>
-                <li>{item.totalClValue}</li>
-                <li>{item.gebClValue}</li>
-                <li class="measured-by">{item.user.name}</li>
-                <li>
-                    {item.user.id === item.updatedBy
-                        ? null
-                        : item.updatedByUser.name}
-                </li>
+    <div class="main-content">
+        <div class="content">
+            <ul class="content-manual first-grid">
+                <li class="">Date:</li>
+                <li>pH:</li>
+                <li>Cl:</li>
+                <li>Total Cl:</li>
+                <li>Combined Cl:</li>
+                <li>Measured by:</li>
+                <li>Updated by:</li>
             </ul>
-        {/each}
+            <div class="wrapper">
+                {#each monthDays as item}
+                    <ul class="content-manual slider">
+                        <li>{item.day}</li>
+                        {#if item.manual}
+                            <li>{item.manual.phValue}</li>
+                            <li>{item.manual.chlorValue}</li>
+                            <li>{item.manual.totalClValue}</li>
+                            <li>{item.manual.gebClValue}</li>
+                            <li class="measured-by">{item.manual.user.name}</li>
+                            <li>
+                                {item.manual.user.id === item.manual.updatedBy
+                                    ? null
+                                    : item.manual.updatedByUser?.name}
+                            </li>
+                        {:else}
+                            <li></li>
+                        {/if}
+                    </ul>
+                {/each}
+            </div>
+        </div>
+        <div class="content">
+            <ul class="content-system first-grid">
+                <li class="">Date</li>
+                <li>pH:</li>
+                <li>Cl:</li>
+                <li>Redox (mV):</li>
+                <li>Temp. (°C):</li>
+                <li>Flow (m&sup3;/h)</li>
+                <li>Backwash</li>
+                <li>Checked by:</li>
+            </ul>
+            <div class="wrapper">
+                {#each monthDays as item}
+                    <ul class="content-system slider">
+                        <li>{item.day}</li>
+                        {#if item.system}
+                            <li>{item.system.phValue}</li>
+                            <li>{item.system.chlorValue}</li>
+                            <li>{item.system.redoxValue}</li>
+                            <li>{item.system.waterTemp}</li>
+                            <li>{item.system.flow}</li>
+                            <li>
+                                {item.system.filterBackwash === false
+                                    ? ""
+                                    : "Yes"}
+                            </li>
+                            <li class="measured-by">{item.system.user.name}</li>
+                        {:else}
+                            <li></li>
+                        {/if}
+                    </ul>
+                {/each}
+            </div>
+        </div>
     </div>
 {:else}
     <p>{message.text}</p>
 {/if}
-<div class="fixed bottom-6 right-6 z-50">
-    <a
-        href="/measurements/addManualData"
-        class="btn btn-circle bg-emerald-800 text-3xl">+</a
-    >
-</div>
+
+<ul class="add">
+    <li>
+        <a href="/measurements/addManualData" class="">+ Add manual data</a>
+    </li>
+    <li>
+        <a href="/measurements/addSystemData" class="">+ Add system data</a>
+    </li>
+</ul>
 
 <style>
-    @reference "tailwindcss";
-
-    h1 {
-        @apply flex py-4 justify-center font-stretch-200% text-5xl;
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
-    
+    .date-changer {
+        display: flex;
+        justify-content: space-between;
+        margin-block: 1rem;
+
+        div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: .75rem;
+
+            button{
+                background-color: transparent;
+                border:none;
+                cursor: pointer;
+                font-size: 1.1rem;
+
+                i{
+                    color: var(--text);
+                }
+            }
+        }
+    }
 
     ul {
+        list-style-type: none;
+    }
+    .content {
+        background-color: var(--bg-light);
+        border-radius: 1rem;
+        display: flex;
+        flex-wrap: nowrap;
+        padding: 1rem;
+    }
+
+    .content-manual,
+    .content-system {
         display: grid;
-        grid-template-rows: repeat(7, 3rem);
-        max-width: 5rem;
-        overflow-x: hidden;
+        grid-template-columns: 4rem;
+        li {
+            height: 2rem;
+            padding: 0.25rem 1rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        li:first-child {
+            background-color: var(--bg-dark);
+        }
     }
 
-    ul:first-child{
-        max-width: 10rem;
+    .first-grid {
+        grid-template-columns: 7.5rem;
     }
 
-    li:first-child {
-        @apply bg-slate-600 font-extrabold;
+    .add {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-block: 1rem;
+
+        li a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.75rem;
+            font-weight: bolder;
+            letter-spacing: -0.01rem;
+            padding: 0.5rem 1rem;
+            transition: 0.3s ease-in-out;
+        }
+        li a:hover {
+            background-color: var(--text-muted);
+            color: var(--bg-light);
+        }
     }
 
-    li {
-        @apply flex items-center;
-        padding-left: 1.5rem;
-        white-space: nowrap;
-    }
+    .wrapper {
+        display: flex;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
 
-    .measured-by {
-        font-size: .9rem;
+        .slider {
+            scroll-snap-align: center;
+        }
     }
 </style>

@@ -1,4 +1,7 @@
 <script>
+    import { goto } from "$app/navigation";
+    import { preventDefault } from "svelte/legacy";
+
     let phValue = $state(null);
     let chlorValue = $state(null);
     let totalClValue = $state(null);
@@ -21,22 +24,24 @@
                 }),
             });
 
-            if (!response.ok) throw new Error(result.error || "Server failure");
-
             const result = await response.json();
 
+            if (!response.ok) throw new Error(result.error || "Server failure");
+
             message = { text: "Successfully saved", type: "success" };
-        } catch (err) {
-            message = { text: err.message, type: "error" };
-        } finally {
             phValue = null;
             chlorValue = null;
             totalClValue = null;
+
+        } catch (err) {
+            message = { text: err.message, type: "error" };
+        } finally {
             isLoading = false;
         }
     };
 </script>
 
+<h1>Add your measured data</h1>
 <div class="form-container">
     <input
         type="number"
@@ -60,8 +65,13 @@
         placeholder="Total Cl (eg. 0.75)"
     />
 
-    <button onclick={handleSubmit} disabled={isLoading} class="measure-btn"
-        >{isLoading ? "In progress..." : "Save"}</button
+    <button
+        onclick={(e) => {
+            e.preventDefault();
+            handleSubmit();
+        }}
+        disabled={isLoading}
+        class="btn">{isLoading ? "In progress..." : "Save"}</button
     >
 
     {#if message.text}
@@ -72,26 +82,52 @@
 </div>
 
 <style>
-    @reference "tailwindcss";
+        .form-container {
+        margin-inline: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background-color: var(--bg);
+        border-radius: 1rem;
+        padding: 1rem;
+        width: min(100%, 30rem);
 
-    .form-container {
-        @apply p-6 max-w-sm mx-auto flex flex-col gap-4;
+        input {
+            border: none;
+            font-family: "Ubuntu Sans Mono", monospace;
+            font-size: 1.25rem;
+            height: 2rem;
+            text-align: center;
+        }
     }
 
-    .measure-input {
-        @apply w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500/20 text-center;
+    .btn {
+        background-color: var(--primary);
+        color: var(--border);
+        border-style: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+        height: 2.5rem;
+        padding: 0.5rem 1rem;
+        text-transform: uppercase;
+        transition: 0.3s;
     }
 
-    .measure-btn {
-        @apply w-full py-3 bg-slate-600 hover:bg-slate-900 text-slate-200 font-bold uppercase rounded-xl transition-all active:scale-95 disabled:opacity-50;
+    .btn:hover {
+        background-color: var(--bg-dark);
+        color: var(--text);
+        text-shadow: 0.1rem 0.1rem 0.05rem var(--bg-light);
     }
 
-    .status-msg {
-        @apply mt-2 text-sm font-medium text-center text-green-600;
+    input::placeholder {
+        opacity: .4;
     }
 
-    /* Ha a hiba osztály is rajta van, felülbíráljuk a színt */
-    .status-msg.error {
-        @apply text-red-600;
+    input[type="number"]{
+        border-radius: .5rem;
     }
 </style>
