@@ -51,7 +51,6 @@
         border: 0.1rem solid var(--border);
         cursor: pointer;
         display: flex;
-        justify-items: start;
         align-items: center;
         background-color: var(--text);
         border-radius: 1rem;

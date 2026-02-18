@@ -213,7 +213,12 @@
             button{
                 background-color: transparent;
                 border:none;
+                cursor: pointer;
                 font-size: 1.1rem;
+
+                i{
+                    color: var(--text);
+                }
             }
         }
     }
