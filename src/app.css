@@ -76,7 +76,7 @@ h6 {
 }
 
 h1 {
-    font-size: min(2.5rem);
+    font-size: min(2.5rem, 8vw);
     letter-spacing: -.1rem;
     padding-block: 2rem;
     text-align: center;

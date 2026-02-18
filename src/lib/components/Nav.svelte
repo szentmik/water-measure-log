@@ -107,7 +107,7 @@
     }
 
     .logo {
-        font-family: "Ubutnu Sans Mono", monospace;
+        font-family: "Ubuntu Sans Mono", monospace;
         font-weight: 700;
         letter-spacing: -0.1rem;
         text-transform: uppercase;
