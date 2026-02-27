@@ -1,26 +1,52 @@
 import { Router } from "express";
+import { db } from "../db.js";
+import { users } from "../schema.js";
+import { getAuth } from "@clerk/express";
+
 const router = Router();
 
-router.get("/:id", async (req, res) => {
-    const userId = req.params.id;
-    if (userId != 1234) {
-        return res.status(400).json({ error: "Undefined user" });
-    }
-    const userData = { name: "John Doe", age: "39" };
 
+//  UPSERT user 
+router.post("/sync", async (req, res) => {
     try {
+        const { userId } = getAuth(req);
+        if (!userId) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
 
-        const result = await userData;
-        res.status(200).json({ ...result })
+        const { email, name, imageUrl } = req.body;
+        if (!email || !name) {
+            return res.status(400).json({ error: "Email, name are required." });
+        }
+
+        const newUser = {
+            id: userId,
+            email,
+            name,
+            imageUrl
+        }
+
+        const [result] = await db.insert(users)
+            .values(newUser)
+            .onConflictDoUpdate({
+                target: users.id,
+                set: {
+                    email,
+                    name,
+                    imageUrl
+                }
+            }).returning();
+
+        if (!result) {
+            return res.status(404).json({ error: "Save failed." })
+        }
+
+        res.status(200).json(result);
 
     } catch (err) {
-        res.status(500).json({ error: err });
+        console.log("Request error", err);
+        res.status(500).json({ error: err || "Server error." });
     }
-    res.json({ username: "John Doe" });
-});
-
-router.post("create", async (req, res)=>{
-
 });
 
 export default router;

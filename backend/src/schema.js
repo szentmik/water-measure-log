@@ -21,7 +21,7 @@ export const measuredValues = pgTable("measured_values", {
 	userId: text("user_id").notNull().references(() => users.id),
 	updatedBy: text("updated_by").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+	updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });
 
 export const measuringSystem = pgTable("measuring_system", {
@@ -30,12 +30,12 @@ export const measuringSystem = pgTable("measuring_system", {
 	chlorValue: numeric("chlor_value", { precision: 5, scale: 2 }),
 	redoxValue: integer("redox_value"),
 	waterTemp: numeric("water_temp", { precision: 4, scale: 1 }),
-	flow: numeric("flow", { precision: 6, scale: 2 }),
+	flow: numeric("flow", { precision: 3, scale: 0 }),
 	filterBackwash: boolean("filter_backwash").default(false).notNull(),
 	userId: text("user_id").notNull().references(() => users.id),
 	updatedBy: text("updated_by").references(() => users.id),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+	updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });
 
 export const activity = pgTable("action_lock", {

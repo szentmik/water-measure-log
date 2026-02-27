@@ -1,45 +1,20 @@
 import { Router } from "express";
 import { db } from "../db.js";
 import { asc } from "drizzle-orm";
-import { measuredValues, measuringSystem } from "../shema.js";
-import { getAuth, requireAuth } from "@clerk/express";
+import { measuringSystem } from "../schema.js";
+import { requireAuth } from "@clerk/express";
+import { getManualData, postOrUpdateData } from "../controller/poolController.js";
 
 const router = Router();
 
 
 // GET secured
-router.get("/manual", requireAuth(), async (req, res) => {
-    try {
-        const result = await db.select().from(measuredValues).orderBy(asc(measuredValues.createdAt)).limit(31);
-        res.status(200).json(result);
-    } catch (err) {
-        console.log("Request error", err);
-        res.status(500).json({ error: err || "Server error" });
-    }
-});
+router.get("/manual", requireAuth() ,getManualData);
 // GET secured
-router.get("/system", requireAuth(), async (req, res) => {
-    try {
-        const result = await db.select().from(measuringSystem).orderBy(asc(measuringSystem.createdAt)).limit(31);
-        res.status(200).json(result);
-    } catch (err) {
-        console.log("Request error", err);
-        res.status(500).json({ error: err || "Server error" });
-    }
-});
+router.get("/system", requireAuth(), );
 
 // POST / UPDATE secured
-router.post("/manual/add", requireAuth(), async (req, res) => {
-    const { userId } = getAuth();
-    const { phValue, chlorValue, totalClValue } = req.body;
-    const gebClValue = totalClValue - chlorValue;
-
-    try {
-
-    } catch (err) {
-
-    }
-});
+router.post("/manual/add", requireAuth(), postOrUpdateData);
 
 
 export default router;
