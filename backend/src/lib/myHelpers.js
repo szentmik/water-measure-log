@@ -9,8 +9,12 @@ export const getTodayRange = () => {
 };
 
 export const getByMonth = (year, month) => {
-    const firstDay = new Date(year, month - 1, 1);
-    const lastDay = new Date(year, month, 0, 23, 59, 59);
+    const now = new Date();
+    const y = parseInt(year) || now.getFullYear();
+    const m = parseInt(month) || now.getMonth() + 1;
+
+    const firstDay = new Date(y, m - 1, 1);
+    const lastDay = new Date(y, m, 0, 23, 59, 59);
 
     return { firstDay, lastDay };
 }
